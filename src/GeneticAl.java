@@ -1,21 +1,20 @@
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class GeneticAl {
-    static private Random random = new Random();
-    static private int generationDigit = 5;//сколько поколений
-    static private int firstGenerationDigit = 30;//сколько особей в первом поколении
-    static private int survivorsDigit = 5;//сколько выживает в каждом поколении после отбора
+    private Random random = new Random();
+    private int generationDigit = 30;//сколько поколений
+    private int firstGenerationDigit = 50;//сколько особей в первом поколении
+    private int survivorsDigit = 10;//сколько выживает в каждом поколении после отбора
     private int maxLoad;
     private Item[] items;
 
 
     public GeneticAl(int load, List<Item> items) {
-        this.items = (Item[]) items.toArray();
-        maxLoad = load;
-    }
+        this.items=new Item[items.size()];
+        this.items =  items.toArray(this.items);
+        maxLoad = load;}
 
     public Individual fillKnapsackGenetic() {
 
@@ -26,8 +25,6 @@ public class GeneticAl {
         //На случай, если последнее поколение может не оказаться лучшим
         for (int i = 0; i < generationDigit; i++)
             generation.evolute();
-
-
         return generation.bestIndividualInHistory;
     }
 
@@ -35,7 +32,7 @@ public class GeneticAl {
     //Особь
     private class Individual {
         byte[] gens;
-        int fitness;//!!!Научиться считать
+        int fitness;
         int load;
 
         Individual() {
@@ -47,7 +44,7 @@ public class GeneticAl {
                 if (load + items[i].getWeight() > maxLoad)
                     gens[i] = 0;
                 else {
-                    gens[i] = (byte) random.nextInt(1);
+                    gens[i] = (byte) random.nextInt(2);
                     if (gens[i] == 1) {
                         load += items[i].getWeight();
                         fitness += items[i].getCost();
@@ -162,14 +159,4 @@ public class GeneticAl {
 
     }
 
-    public static void main(String[] args) {
-        List<Item> items = new ArrayList<>();
-        items.add(new Item(8, 10));
-        items.add(new Item(5, 12));
-        items.add(new Item(6, 8));
-        items.add(new Item(10, 15));
-        items.add(new Item(4, 2));
-        GeneticAl geneticAl = new GeneticAl(30,items);
-        System.out.println(geneticAl.fillKnapsackGenetic().toString());
-    }
-}
+ }
