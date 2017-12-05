@@ -1,6 +1,5 @@
 import java.util.*
 
-
 data class Fill(val cost: Int, val items: Set<Item>) {
     operator fun plus(fill: Fill) = Fill(cost + fill.cost, items + fill.items)
 
@@ -48,7 +47,5 @@ fun main(args: Array<String>) {
     val items = listOf(Item(8, 10), Item(5, 12), Item(6, 8), Item(10, 15), Item(4, 2))
     println(fillKnapsackDynamic(30, items))
     println(fillKnapsackGreedy(30, items))
-
-
 
 }

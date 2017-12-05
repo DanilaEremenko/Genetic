@@ -3,7 +3,6 @@ import org.junit.Before;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 
 public class GeneticAlTest {
     private List<Item> items;
@@ -17,7 +16,7 @@ public class GeneticAlTest {
         items.add(new Item(6, 8));
         items.add(new Item(10, 15));
         items.add(new Item(4, 2));
-        geneticAl = new GeneticAl(30, items);
+        geneticAl = new GeneticAl(30, items,20);
     }
 
     @org.junit.Test
