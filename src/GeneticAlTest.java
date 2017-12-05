@@ -2,7 +2,7 @@ import org.junit.Before;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import static org.junit.Assert.*;
 
 public class GeneticAlTest {
     private List<Item> items;
@@ -23,6 +23,7 @@ public class GeneticAlTest {
     public void fillKnapsackGenetic() throws Exception {
         for (int i = 0; i < 20; i++) {
             System.out.println(geneticAl.fillKnapsackGenetic());
+
         }
 
     }
