@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -7,14 +8,15 @@ public class GeneticAl {
     static private int generationDigit = 5;//сколько поколений
     static private int firstGenerationDigit = 30;//сколько особей в первом поколении
     static private int survivorsDigit = 5;//сколько выживает в каждом поколении после отбора
-    static private int maxLoad;
-    static private Item[] items;
+    private int maxLoad;
+    private Item[] items;
 
 
-    public GeneticAl(int load, List<Item> items){
-        items = (Item[]) items.toArray();
+    public GeneticAl(int load, List<Item> items) {
+        this.items = (Item[]) items.toArray();
         maxLoad = load;
     }
+
     public Individual fillKnapsackGenetic() {
 
 
@@ -28,8 +30,6 @@ public class GeneticAl {
 
         return generation.bestIndividualInHistory;
     }
-
-
 
 
     //Особь
@@ -160,8 +160,16 @@ public class GeneticAl {
         }
 
 
-
     }
 
-
+    public static void main(String[] args) {
+        List<Item> items = new ArrayList<>();
+        items.add(new Item(8, 10));
+        items.add(new Item(5, 12));
+        items.add(new Item(6, 8));
+        items.add(new Item(10, 15));
+        items.add(new Item(4, 2));
+        GeneticAl geneticAl = new GeneticAl(30,items);
+        System.out.println(geneticAl.fillKnapsackGenetic());
+    }
 }
