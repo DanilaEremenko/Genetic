@@ -170,6 +170,6 @@ public class GeneticAl {
         items.add(new Item(10, 15));
         items.add(new Item(4, 2));
         GeneticAl geneticAl = new GeneticAl(30,items);
-        System.out.println(geneticAl.fillKnapsackGenetic());
+        System.out.println(geneticAl.fillKnapsackGenetic().toString());
     }
 }
