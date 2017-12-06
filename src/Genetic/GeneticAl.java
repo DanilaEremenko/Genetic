@@ -11,19 +11,28 @@ public class GeneticAl {
     private int maxLoad;
     private Item[] items;
 
+    public GeneticAl() {
+    }
 
-    public GeneticAl(int mutantsDigit,int generationDigit,int firstGenerationDigit,int survivorsDigit) {
-        this.mutantsDigit=mutantsDigit;
-        this.generationDigit=generationDigit;
-        this.firstGenerationDigit=firstGenerationDigit;
-        this.survivorsDigit=survivorsDigit;
+    public GeneticAl(int mutantsDigit, int generationDigit, int firstGenerationDigit, int survivorsDigit) {
+        this.mutantsDigit = mutantsDigit;
+        this.generationDigit = generationDigit;
+        this.firstGenerationDigit = firstGenerationDigit;
+        this.survivorsDigit = survivorsDigit;
+    }
+
+    public void set(int mutantsDigit, int generationDigit, int firstGenerationDigit, int survivorsDigit) {
+        this.mutantsDigit = mutantsDigit;
+        this.generationDigit = generationDigit;
+        this.firstGenerationDigit = firstGenerationDigit;
+        this.survivorsDigit = survivorsDigit;
     }
 
 
     public Fill fillKnapsackGenetic(int load, List<Item> items) {
         this.items = new Item[items.size()];
         this.items = items.toArray(this.items);
-        maxLoad=load;
+        maxLoad = load;
         return fillKnapsackGenetic().convertToFill();
 
     }
@@ -42,7 +51,7 @@ public class GeneticAl {
 
 
     //Особь
-    private class Individual {
+    public class Individual {
         byte[] gens;
         int fitness;
         int load;
@@ -60,6 +69,7 @@ public class GeneticAl {
                     if (gens[i] == 1) {
                         load += items[i].getWeight();
                         fitness += items[i].getCost();
+
                     }
                 }
 
@@ -80,18 +90,40 @@ public class GeneticAl {
             int load = 0;
             int fitness = 0;
             for (int i = 0; i < gens.length; i++)
-                if (gens[i] == opponent.gens[i])
+                if (gens[i] == opponent.gens[i]) {
                     gensOfChild[i] = gens[i];
-                else if (load + items[i].getWeight() > maxLoad)
-                    gensOfChild[i] = 0;
-                else {
-                    gensOfChild[i] = (byte) random.nextInt(i);
-                    load += items[i].getWeight();
-                    fitness += items[i].getCost();
+                    if (gens[i] == 1) {
+                        load += items[i].getWeight();
+                        fitness += items[i].getCost();
+                    }
+                } else {
+                    gensOfChild[i] = (byte) random.nextInt(2);
+                    if (gensOfChild[i] == 1) {
+                        load += items[i].getWeight();
+                        fitness += items[i].getCost();
+                    }
                 }
 
             return new Individual(gensOfChild, load, fitness);
 
+        }
+
+        //Мутации
+        private Individual mutantReverse() {
+            byte[] gensMutant = new byte[items.length];
+            int fitness = 0;
+            int load = 0;
+            for (int i = 0; i < items.length; i++) {
+                if (gens[i] == 1)
+                    gensMutant[i] = 0;
+                else {
+                    gensMutant[i] = 1;
+                    load += items[i].getWeight();
+                    fitness += items[i].getCost();
+                }
+
+            }
+            return new Individual(gensMutant, load, fitness);
         }
 
         Fill convertToFill() {
@@ -105,13 +137,7 @@ public class GeneticAl {
 
         @Override
         public String toString() {
-            String string = "";
-            string += "Genetic.Fill(cost=" + fitness + ", items=[)";
-            for (int i = 0; i < gens.length; i++)
-                if (gens[i] == 1)
-                    string += "Genetic.Item(cost=" + items[i].getCost() + ", weight=" + items[i].getWeight() + "),  ";
-            string += "])";
-            return string;
+            return "" + fitness;
         }
     }
 
@@ -136,7 +162,7 @@ public class GeneticAl {
             individuals = crossing();
             for (int i = 0; i < mutantsDigit; i++)
                 individuals.add(new Individual());
-            individuals.add(reverseGens(bestIndividualInHistory));
+            individuals.addAll(mutation());
             searchBestIndividuals();
         }
 
@@ -147,14 +173,15 @@ public class GeneticAl {
                     bestIndividualInHistory = individual;
         }
 
+        //Попробовать удалять неотобранные
         private List<Individual> selection() {
             List<Individual> survivorsIndividuals = new ArrayList<>(survivorsDigit);
-            int removeIndex = 0;
-            for (int i = 0; i < survivorsIndividuals.size(); i++) {
-                Individual bestInGeneration = individuals.get(0);
+            for (int i = 0; i < survivorsDigit; i++) {
+                int removeIndex = 0;
+                Individual bestInGeneration = new Individual(individuals.get(0).gens, individuals.get(0).load, individuals.get(0).fitness);
                 for (int j = 0; j < individuals.size(); j++) {
                     if (individuals.get(j).fitness > bestInGeneration.fitness) {
-                        bestInGeneration = individuals.get(j);
+                        bestInGeneration = new Individual(individuals.get(j).gens, individuals.get(j).load, individuals.get(j).fitness);
                         removeIndex = j;
 
                     }
@@ -178,21 +205,12 @@ public class GeneticAl {
         }
 
         //Мутации
-        private Individual reverseGens(Individual individual) {
-            byte[] mutantsGens = new byte[items.length];
-            int fitness = 0;
-            int weight = 0;
-            for (int i = 0; i < items.length; i++)
-                if (individual.gens[i] == 1)
-                    mutantsGens[i] = 0;
-                else {
-                    mutantsGens[i] = 1;
-                    fitness += items[i].getCost();
-                    weight += items[i].getWeight();
-                }
+        private List<Individual> mutation() {
+            List<Individual> mutatnts = new ArrayList<>();
+            for (Individual individual : individuals)
+                mutatnts.add(individual.mutantReverse());
 
-
-            return new Individual(mutantsGens, weight, fitness);
+            return mutatnts;
 
         }
 

@@ -13,7 +13,7 @@ public class GeneticAlTest {
     Random random = new Random();
     private List<Item> items;
     private Algs algs = new Algs();
-    private GeneticAl geneticAl = new GeneticAl(50, 50, 100, 10);
+    private GeneticAl geneticAl = new GeneticAl(10, 10, 1000, 20);
     private int itemsSize = 200;
     int maxLoad = 1000;
 
@@ -21,7 +21,8 @@ public class GeneticAlTest {
     public void temps() {
         items = new ArrayList<>();
         for (int i = 0; i < itemsSize; i++)
-            items.add(new Item(1 + random.nextInt(50), 1 + random.nextInt(500)));
+            items.add(new Item(1 + random.nextInt(10000), 1 + random.nextInt(1000                                       )));
+
 
 
     }
@@ -47,10 +48,6 @@ public class GeneticAlTest {
         endTime = System.currentTimeMillis();
         System.out.println("Время исполнения жадного: " + (endTime - startTime) + "мс");
 
-        if (fillGenetic.getCost() >= fillDynamic.getCost())
-            betterOrEqualsDynamic++;
-        if (fillGenetic.getCost() > fillGreedy.getCost())
-            betterOrEqualsGreedy++;
 
         long geneticCost = 0;
         long dynamicCost = 0;
@@ -70,11 +67,11 @@ public class GeneticAlTest {
         System.out.println(betterOrEqualsDynamic);
         System.out.println(betterOrEqualsGreedy);
         System.out.println("Последний динамический = " + fillDynamic.getCost());
-        System.out.println("Средняя ценность динамического = "+dynamicCost/reload);
+        System.out.println("Средняя ценность динамического = " + dynamicCost / reload);
         System.out.println("Последний жадный = " + fillGreedy.getCost());
-        System.out.println("Средняя ценность жадный = "+greedyCost/reload);
+        System.out.println("Средняя ценность жадный = " + greedyCost / reload);
         System.out.println("Последний генетический = " + fillGenetic.getCost());
-        System.out.println("Средняя ценность генетический = "+geneticCost/reload);
+        System.out.println("Средняя ценность генетический = " + geneticCost / reload);
         assertEquals(true, betterOrEqualsDynamic > 90);
         assertEquals(true, betterOrEqualsGreedy == 100);
     }
