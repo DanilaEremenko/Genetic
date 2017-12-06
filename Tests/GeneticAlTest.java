@@ -30,36 +30,45 @@ public class GeneticAlTest {
 
     @Test
     public void fillKnapsackGenetic() throws Exception {
-        Fill fillGenetic = geneticAl.fillKnapsackGenetic(maxLoad, items);
-        System.out.println("Генетический набрал= " + fillGenetic.getCost());
-        int weight = 0;
-        for (Item item : fillGenetic.getItems())
-            weight += item.getWeight();
-        System.out.println("Вес" + weight);
+        for (int i = 0; i < 10; i++) {
+            terms();
+            Fill fillGenetic = geneticAl.fillKnapsackGenetic(maxLoad, items);
+            System.out.println("Генетический набрал= " + fillGenetic.getCost());
+            int weight = 0;
+            for (Item item : fillGenetic.getItems())
+                weight += item.getWeight();
+            System.out.println("Вес" + weight);
+        }
     }
 
     @Test
     public void fillKnapsackGreedy() throws Exception {
-        try {
-        Fill fillGreedy = algs.fillKnapsackGreedy(maxLoad, items);
-        System.out.println("Жадный набрал = " + fillGreedy.getCost());
-        int weight = 0;
-        for (Item item : fillGreedy.getItems())
-            weight += item.getWeight();
-        System.out.println("Вес" + weight);
-        } catch (StackOverflowError e) {
-            System.out.println("Жадный выбыл");
+        for (int i = 0; i < 10; i++) {
+            terms();
+            try {
+                Fill fillGreedy = algs.fillKnapsackGreedy(maxLoad, items);
+                System.out.println("Жадный набрал = " + fillGreedy.getCost());
+                int weight = 0;
+                for (Item item : fillGreedy.getItems())
+                    weight += item.getWeight();
+                System.out.println("Вес" + weight);
+            } catch (StackOverflowError e) {
+                System.out.println("Жадный выбыл");
+            }
         }
 
     }
 
     @Test
     public void fillKnapsackDynamic() throws Exception {
-        try {
-            Fill fillDynamic = algs.fillKnapsackDynamic(maxLoad, items, new HashMap<>());
-            System.out.println("Динамический набрал= " + fillDynamic.getCost());
-        } catch (StackOverflowError e) {
-            System.out.println("Динамический выбыл");
+        for (int i = 0; i < 10; i++) {
+            terms();
+            try {
+                Fill fillDynamic = algs.fillKnapsackDynamic(maxLoad, items, new HashMap<>());
+                System.out.println("Динамический набрал= " + fillDynamic.getCost());
+            } catch (StackOverflowError e) {
+                System.out.println("Динамический выбыл");
+            }
         }
     }
 
