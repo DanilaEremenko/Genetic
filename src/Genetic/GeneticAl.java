@@ -6,24 +6,25 @@ public class GeneticAl {
     Random random = new Random();
     private int mutantsDigit = 10;//сколько мутантов появляется в новом поколении
     private int generationDigit = 10;//сколько поколений
-    private int firstGenerationDigit = 30;//сколько особей в первом поколении
-    private int survivorsDigit = 5;//сколько выживает в каждом поколении после отбора
+    private int firstGenerationDigit = 50;//сколько особей в первом поколении
+    private int survivorsDigit = 10;//сколько выживает в каждом поколении после отбора
     private int maxLoad;
     private Item[] items;
 
 
-    public GeneticAl(int load, List<Item> items, int generationDigit) {
-        this.generationDigit = generationDigit;
-        this.items = new Item[items.size()];
-        this.items = items.toArray(this.items);
-        maxLoad = load;
+    public GeneticAl(int mutantsDigit,int generationDigit,int firstGenerationDigit,int survivorsDigit) {
+        this.mutantsDigit=mutantsDigit;
+        this.generationDigit=generationDigit;
+        this.firstGenerationDigit=firstGenerationDigit;
+        this.survivorsDigit=survivorsDigit;
     }
 
 
-    public static Fill fillKnapsackGenetic(int load, List<Item> items, int generationDigit) {
-
-        GeneticAl geneticAl = new GeneticAl(load, items, generationDigit);
-        return geneticAl.fillKnapsackGenetic().convertToFill();
+    public Fill fillKnapsackGenetic(int load, List<Item> items) {
+        this.items = new Item[items.size()];
+        this.items = items.toArray(this.items);
+        maxLoad=load;
+        return fillKnapsackGenetic().convertToFill();
 
     }
 
