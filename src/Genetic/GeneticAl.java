@@ -1,4 +1,4 @@
-import com.sun.org.apache.bcel.internal.generic.GETFIELD;
+package Genetic;
 
 import java.util.*;
 
@@ -105,10 +105,10 @@ public class GeneticAl {
         @Override
         public String toString() {
             String string = "";
-            string += "Fill(cost=" + fitness + ", items=[)";
+            string += "Genetic.Fill(cost=" + fitness + ", items=[)";
             for (int i = 0; i < gens.length; i++)
                 if (gens[i] == 1)
-                    string += "Item(cost=" + items[i].getCost() + ", weight=" + items[i].getWeight() + "),  ";
+                    string += "Genetic.Item(cost=" + items[i].getCost() + ", weight=" + items[i].getWeight() + "),  ";
             string += "])";
             return string;
         }
