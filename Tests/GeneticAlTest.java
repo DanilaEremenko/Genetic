@@ -3,77 +3,61 @@ import Genetic.Fill;
 import Genetic.GeneticAl;
 import Genetic.Item;
 import org.junit.Before;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.util.*;
 
 
 public class GeneticAlTest {
     Random random = new Random();
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
     private Algs algs = new Algs();
-    private GeneticAl geneticAl = new GeneticAl(10, 10, 1000, 20);
-    private int itemsSize = 200;
+    private GeneticAl geneticAl = new GeneticAl(10, 10, 100, 10);
+    private int smallItemSize = 10;
+    private int normalItemSize=100;
+    private int bigItemSize = 100000;
     int maxLoad = 1000;
 
     @Before
-    public void temps() {
+    public void terms() throws Exception {
+        System.out.println("Большое колличество предметов");
         items = new ArrayList<>();
-        for (int i = 0; i < itemsSize; i++)
-            items.add(new Item(1 + random.nextInt(10000), 1 + random.nextInt(1000                                       )));
+        for (int i = 0; i < bigItemSize; i++) {
+            items.add(new Item(1 + random.nextInt(10000), 1 + random.nextInt(1000)));
 
-
-
-    }
-
-    @org.junit.Test
-    public void fillKnapsackGenetic() throws Exception {
-        int betterOrEqualsDynamic = 0;
-        int betterOrEqualsGreedy = 0;
-        int reload = 100;
-
-        long startTime = System.currentTimeMillis();
-        Fill fillGenetic = geneticAl.fillKnapsackGenetic(maxLoad, items);
-        long endTime = System.currentTimeMillis();
-        System.out.println("Время исполнения генетиеского: " + (endTime - startTime) + "мс");
-
-        startTime = System.currentTimeMillis();
-        Fill fillDynamic = algs.fillKnapsackDynamic(maxLoad, items, new HashMap<>());
-        endTime = System.currentTimeMillis();
-        System.out.println("Время исполнения динамического: " + (endTime - startTime) + "мс");
-
-        startTime = System.currentTimeMillis();
-        Fill fillGreedy = algs.fillKnapsackGreedy(maxLoad, items);
-        endTime = System.currentTimeMillis();
-        System.out.println("Время исполнения жадного: " + (endTime - startTime) + "мс");
-
-
-        long geneticCost = 0;
-        long dynamicCost = 0;
-        long greedyCost = 0;
-        for (int i = 0; i < reload; i++) {
-            fillGenetic = geneticAl.fillKnapsackGenetic(maxLoad, items);
-            geneticCost += fillGenetic.getCost();
-            fillDynamic = algs.fillKnapsackDynamic(maxLoad, items, new HashMap<>());
-            dynamicCost += fillDynamic.getCost();
-            fillGreedy = algs.fillKnapsackGreedy(maxLoad, items);
-            greedyCost += fillGreedy.getCost();
-            if (fillGenetic.getCost() >= fillDynamic.getCost())
-                betterOrEqualsDynamic++;
-            if (fillGenetic.getCost() >= fillGreedy.getCost())
-                betterOrEqualsGreedy++;
         }
-        System.out.println(betterOrEqualsDynamic);
-        System.out.println(betterOrEqualsGreedy);
-        System.out.println("Последний динамический = " + fillDynamic.getCost());
-        System.out.println("Средняя ценность динамического = " + dynamicCost / reload);
-        System.out.println("Последний жадный = " + fillGreedy.getCost());
-        System.out.println("Средняя ценность жадный = " + greedyCost / reload);
-        System.out.println("Последний генетический = " + fillGenetic.getCost());
-        System.out.println("Средняя ценность генетический = " + geneticCost / reload);
-        assertEquals(true, betterOrEqualsDynamic > 90);
-        assertEquals(true, betterOrEqualsGreedy == 100);
     }
+
+
+    @Test
+    public void fillKnapsackGenetic() throws Exception {
+        Fill fillGenetic = geneticAl.fillKnapsackGenetic(1000, items);
+        System.out.println("Генетический набрал= " + fillGenetic.getCost());
+        int weight=0;
+        for (Item item:fillGenetic.getItems())
+        weight+=item.getWeight();
+        System.out.println("Вес"+weight);
+    }
+
+    @Test
+    public void fillKnapsackGreedy() throws Exception {
+        Fill fillGreedy = algs.fillKnapsackGreedy(1000, items);
+        System.out.println("Жадный набрал = " + fillGreedy.getCost());
+        int weight=0;
+        for (Item item:fillGreedy.getItems())
+            weight+=item.getWeight();
+        System.out.println("Вес"+weight);
+    }
+
+    @Test
+    public void fillKnapsackDynamic() throws Exception {
+        try {
+            Fill fillDynamic = algs.fillKnapsackDynamic(1000, items, new HashMap<>());
+            System.out.println("Динамический набрал= " + fillDynamic.getCost());
+        } catch (StackOverflowError e) {
+            System.out.println("Динамический выбыл");
+        }
+    }
+
 
 }

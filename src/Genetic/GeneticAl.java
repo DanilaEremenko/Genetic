@@ -39,7 +39,6 @@ public class GeneticAl {
 
     public Individual fillKnapsackGenetic() {
 
-
         Generation generation = new Generation();
         //Эволюционируем заданное колличество раз
         //Каждый раз выбираем из поколения лучший экземпляр
@@ -60,19 +59,32 @@ public class GeneticAl {
             load = 0;
             fitness = 0;
             gens = new byte[items.length];
-            for (int i = 0; i < gens.length; i++)
-                //Если предмет нельзя взять, гарантированно не берем
-                if (load + items[i].getWeight() > maxLoad)
-                    gens[i] = 0;
-                else {
-                    gens[i] = (byte) random.nextInt(2);
-                    if (gens[i] == 1) {
-                        load += items[i].getWeight();
-                        fitness += items[i].getCost();
+            int goFromStart = random.nextInt(2);
 
+            if (goFromStart == 1)
+                for (int i = 0; i < gens.length; i++) {
+                    if (load + items[i].getWeight() > maxLoad)
+                        gens[i] = 0;
+                    else {
+                        gens[i] = (byte) random.nextInt(2);
+                        if (gens[i] == 1) {
+                            load += items[i].getWeight();
+                            fitness += items[i].getCost();
+                        }
                     }
                 }
-
+            else
+                for (int i = gens.length - 1; i >= 0; i--) {
+                    if (load + items[i].getWeight() > maxLoad)
+                        gens[i] = 0;
+                    else {
+                        gens[i] = (byte) random.nextInt(2);
+                        if (gens[i] == 1) {
+                            load += items[i].getWeight();
+                            fitness += items[i].getCost();
+                        }
+                    }
+                }
 
         }
 
@@ -137,7 +149,7 @@ public class GeneticAl {
 
         @Override
         public String toString() {
-            return "" + fitness;
+            return "f: " + fitness + " w: " + load;
         }
     }
 
@@ -149,20 +161,25 @@ public class GeneticAl {
 
         Generation() {
             individuals = new ArrayList<>();
+            //Первое поколение
             for (int i = 0; i < firstGenerationDigit; i++)
                 individuals.add(new Individual());
 
-            bestIndividualInHistory = individuals.get(0);
+            byte[] gens = new byte[items.length];
+            for (int i = 0; i < gens.length; i++) {
+                gens[i] = 0;
+            }
+            bestIndividualInHistory = new Individual(gens, 0, 0);
 
         }
 
 
         private void evolute() {
-            individuals = selection();
-            individuals = crossing();
             for (int i = 0; i < mutantsDigit; i++)
                 individuals.add(new Individual());
-            individuals.addAll(mutation());
+            individuals.addAll(mutants());
+            individuals = selection();
+            individuals = crossing();
             searchBestIndividuals();
         }
 
@@ -173,14 +190,14 @@ public class GeneticAl {
                     bestIndividualInHistory = individual;
         }
 
-        //Попробовать удалять неотобранные
+
         private List<Individual> selection() {
             List<Individual> survivorsIndividuals = new ArrayList<>(survivorsDigit);
             for (int i = 0; i < survivorsDigit; i++) {
                 int removeIndex = 0;
-                Individual bestInGeneration = new Individual(individuals.get(0).gens, individuals.get(0).load, individuals.get(0).fitness);
+                Individual bestInGeneration = new Individual(new byte[items.length],0, 0);
                 for (int j = 0; j < individuals.size(); j++) {
-                    if (individuals.get(j).fitness > bestInGeneration.fitness) {
+                    if (individuals.get(j).fitness > bestInGeneration.fitness&&individuals.get(j).load<=maxLoad) {
                         bestInGeneration = new Individual(individuals.get(j).gens, individuals.get(j).load, individuals.get(j).fitness);
                         removeIndex = j;
 
@@ -205,7 +222,7 @@ public class GeneticAl {
         }
 
         //Мутации
-        private List<Individual> mutation() {
+        private List<Individual> mutants() {
             List<Individual> mutatnts = new ArrayList<>();
             for (Individual individual : individuals)
                 mutatnts.add(individual.mutantReverse());
