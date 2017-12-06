@@ -20,7 +20,6 @@ public class GeneticAlTest {
 
     @Before
     public void terms() throws Exception {
-        System.out.println("Большое колличество предметов");
         items = new ArrayList<>();
         for (int i = 0; i < bigItemSize; i++) {
             items.add(new Item(1 + random.nextInt(10000), 1 + random.nextInt(1000)));
